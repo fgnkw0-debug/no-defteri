@@ -1,0 +1,37 @@
+name: APK Olustur
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Projeyi ac
+        run: unzip -o NotDefteri.zip
+
+      - name: Java kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Android SDK kur
+        uses: android-actions/setup-android@v3
+
+      - name: Gerekli SDK paketleri
+        run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
+
+      - name: APK derle
+        working-directory: NotDefteri
+        run: gradle assembleDebug --no-daemon
+
+      - name: APK yukle
+        uses: actions/upload-artifact@v4
+        with:
+          name: not-defteri-apk
+          path: NotDefteri/app/build/outputs/apk/debug/app-debug.apk
